@@ -19,17 +19,15 @@ namespace MultyChat
         //use varialbles for all kind of life situations
         UdpClient client;
         IPAddress ip;                   //ip for multicast
-        int receivePort = 9005;         //LOCALPORT Receiving port
-        int sendPort = 9005;                   //REMOTEPORT Sending port
+        int LOCALPORT = 8001;         //LOCALPORT Receiving port
+        int REMOTEPORT = 8001;            //REMOTEPORT Sending port
         int TTL = 20;                   //how many routers
-
-        
-        bool isAlive = false;           //if the task still alive
-        
         string userName = "";           //user name
         string HOST = "235.5.5.1";      //multicast ip
 
-        
+        bool isAlive = false;           //if the task still alive
+
+
         public Chat()
         {
             InitializeComponent();
@@ -39,8 +37,9 @@ namespace MultyChat
             joinButton.Enabled = true;
             disconnectButton.Enabled = false;
             sendButton.Enabled = false;
-            Int32.TryParse(portInfo.Text, out sendPort);
-            Int32.TryParse(receivePortInfo.Text, out receivePort);
+
+            Int32.TryParse(portInfo.Text, out REMOTEPORT);
+            Int32.TryParse(receivePortInfo.Text, out LOCALPORT);
 
         }
 
@@ -51,7 +50,7 @@ namespace MultyChat
 
             try
             {
-                client = new UdpClient(receivePort);
+                client = new UdpClient(LOCALPORT);
                 
                 client.JoinMulticastGroup(ip, TTL);
 
@@ -62,7 +61,7 @@ namespace MultyChat
                     + ": " + nickname.Text + " connected";
 
                 SendMessage(message);
-
+                
                 joinButton.Enabled = false;
                 disconnectButton.Enabled = true;
                 sendButton.Enabled = true;
@@ -83,7 +82,7 @@ namespace MultyChat
         {
             string message = DateTime.Now.ToShortTimeString() +": "+ userName + " left Chat";
             SendMessage(message);
-          
+            
             client.DropMulticastGroup(ip);
 
             isAlive = false;
@@ -103,23 +102,27 @@ namespace MultyChat
 
         void SendMessage(string message)
         {
-            byte[] data = Encoding.Unicode.GetBytes(message);
-            client.Send(data, data.Length, HOST, sendPort);
-            Appendtext(message);
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            client.Send(data, data.Length, HOST, REMOTEPORT);
+           Appendtext(message);
         }
 
         void Listen()
         {
-            UdpClient receiver = new UdpClient(sendPort);
             isAlive = true;
             try
             {
                 while (isAlive)
                 {
-                    IPEndPoint ipep = null;
-                    byte[] buff = receiver.Receive(ref ipep);
-                    string mes = Encoding.UTF8.GetString(buff);
-                    Appendtext(mes);
+                    IPEndPoint remoteIP = new IPEndPoint(IPAddress.Any, REMOTEPORT);
+                    byte[] buff = new byte[1024];
+                    buff = client.Receive(ref remoteIP);
+                    if (remoteIP != null)
+                    {
+                        string mes = Encoding.UTF8.GetString(buff);
+                        Appendtext(mes);
+                        MessageBox.Show(userName + "Received");
+                    }
                 }
             }
             catch(ObjectDisposedException)
@@ -132,24 +135,21 @@ namespace MultyChat
             {
                 MessageBox.Show(ex.Message + " IN LISTEN");
             }
-            
         }
 
         private void portInfo_TextChanged(object sender, EventArgs e)
         {
-            Int32.TryParse(portInfo.Text, out sendPort);
+            Int32.TryParse(portInfo.Text, out REMOTEPORT);
         }
 
         void Appendtext(string message)
         {
-            allMessages.Text += message + "\r\n";
+            allMessages.Text = message + "\r\n" + allMessages.Text;
         }
 
         private void receivePortInfo_TextChanged(object sender, EventArgs e)
         {
-
-            Int32.TryParse(receivePortInfo.Text, out receivePort);
-
+            Int32.TryParse(receivePortInfo.Text, out LOCALPORT);
         }
     }
 }
