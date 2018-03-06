@@ -42,12 +42,16 @@
             this.nickname = new System.Windows.Forms.TextBox();
             this.disconnectButton = new System.Windows.Forms.Button();
             this.joinButton = new System.Windows.Forms.Button();
+            this.ChatView = new System.Windows.Forms.ListView();
+            this.Nick = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Message = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.ChatView);
             this.groupBox1.Controls.Add(this.allMessages);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
@@ -58,12 +62,11 @@
             // 
             // allMessages
             // 
-            this.allMessages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.allMessages.Location = new System.Drawing.Point(3, 16);
+            this.allMessages.Location = new System.Drawing.Point(0, 27);
             this.allMessages.Multiline = true;
             this.allMessages.Name = "allMessages";
             this.allMessages.ReadOnly = true;
-            this.allMessages.Size = new System.Drawing.Size(319, 341);
+            this.allMessages.Size = new System.Drawing.Size(319, 42);
             this.allMessages.TabIndex = 0;
             // 
             // groupBox2
@@ -189,6 +192,28 @@
             this.joinButton.UseVisualStyleBackColor = true;
             this.joinButton.Click += new System.EventHandler(this.joinButton_Click);
             // 
+            // ChatView
+            // 
+            this.ChatView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Nick,
+            this.Message});
+            this.ChatView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ChatView.Location = new System.Drawing.Point(3, 16);
+            this.ChatView.Name = "ChatView";
+            this.ChatView.Size = new System.Drawing.Size(319, 341);
+            this.ChatView.TabIndex = 1;
+            this.ChatView.UseCompatibleStateImageBehavior = false;
+            this.ChatView.View = System.Windows.Forms.View.Details;
+            // 
+            // Nick
+            // 
+            this.Nick.Text = "Nick";
+            // 
+            // Message
+            // 
+            this.Message.Text = "Message";
+            this.Message.Width = 191;
+            // 
             // Chat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -222,6 +247,9 @@
         private System.Windows.Forms.TextBox portInfo;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox receivePortInfo;
+        private System.Windows.Forms.ListView ChatView;
+        private System.Windows.Forms.ColumnHeader Nick;
+        private System.Windows.Forms.ColumnHeader Message;
     }
 }
 

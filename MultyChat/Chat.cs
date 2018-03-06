@@ -144,6 +144,11 @@ namespace MultyChat
 
         void Appendtext(string message)
         {
+           
+            ListViewItem lvi = ChatView.Items.Add(userName);
+            
+            lvi.SubItems.Insert(1,new ListViewItem.ListViewSubItem(lvi, message));
+            
             allMessages.Text = message + "\r\n" + allMessages.Text;
         }
 
