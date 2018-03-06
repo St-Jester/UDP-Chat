@@ -57,8 +57,8 @@ namespace MultyChat
                 Task listenTask = new Task(Listen);
                 listenTask.Start();
                 
-                string message = DateTime.Now.ToShortTimeString()
-                    + ": " + nickname.Text + " connected";
+                string message = userName + " " + DateTime.Now.ToShortTimeString()
+                    + ": " +" connected";
 
                 SendMessage(message);
                 
@@ -80,7 +80,7 @@ namespace MultyChat
 
         private void ExitChat()
         {
-            string message = DateTime.Now.ToShortTimeString() +": "+ userName + " left Chat";
+            string message = userName + " " + DateTime.Now.ToShortTimeString() +": "+" left Chat";
             SendMessage(message);
             
             client.DropMulticastGroup(ip);
@@ -96,7 +96,7 @@ namespace MultyChat
 
         private void sendButton_Click(object sender, EventArgs e)
         {
-            string message = DateTime.Now.ToShortTimeString() + ": " + messageText.Text;
+            string message = userName +" "+ DateTime.Now.ToShortTimeString() + ": " + messageText.Text;
             SendMessage(message);
         }
 
@@ -144,8 +144,9 @@ namespace MultyChat
 
         void Appendtext(string message)
         {
-           
-            ListViewItem lvi = ChatView.Items.Add(userName);
+            char anchor = ' ';
+            string UN = message.Split(anchor)[0];
+            ListViewItem lvi = ChatView.Items.Add(UN);
             
             lvi.SubItems.Insert(1,new ListViewItem.ListViewSubItem(lvi, message));
             
