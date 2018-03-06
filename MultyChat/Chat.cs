@@ -18,67 +18,44 @@ namespace MultyChat
     {
         //use varialbles for all kind of life situations
         UdpClient client;
-        IPAddress ip;
-        int remoteport, selfport;
-        int TTL;
-        //Thread listenTread;
-        bool isAlive = false;//to handle exit event
-        //IPEndPoint ep;  
-        //Socket senderSocket;
-        string userName = "";
-        string HOST = "235.5.5.1";
+        IPAddress ip;                   //ip for multicast
+        int receivePort = 9005;         //LOCALPORT Receiving port
+        int sendPort;                   //REMOTEPORT Sending port
+        int TTL = 20;                   //how many routers
 
+        
+        bool isAlive = false;           //if the task still alive
+        
+        string userName = "";           //user name
+        string HOST = "235.5.5.1";      //multicast ip
+
+        
         public Chat()
         {
             InitializeComponent();
-            remoteport = Convert.ToInt32(portInfo.Text);
-
-            //can be changed to check on one comp
-            selfport = 9005;//listen in this port
-            TTL = 50;
+            
             ip = IPAddress.Parse(HOST);
             
-            //ep = new IPEndPoint(ip, port);
-            //senderSocket = new Socket
-            //    (AddressFamily.InterNetwork,
-            //    SocketType.Dgram, 
-            //    ProtocolType.Udp);
-
-            //senderSocket.SetSocketOption
-            //    (SocketOptionLevel.IP,
-            //    SocketOptionName.MulticastTimeToLive,2);
-
-            //senderSocket.SetSocketOption
-            //    (SocketOptionLevel.IP, 
-            //    SocketOptionName.AddMembership,
-            //    new MulticastOption(ip));
-
-            //listenTread = new Thread(new ThreadStart(Listen));
-            //listenTread.IsBackground = true;
-
-            //button states
             joinButton.Enabled = true;
             disconnectButton.Enabled = false;
             sendButton.Enabled = false;
+            Int32.TryParse(portInfo.Text, out sendPort);
         }
 
         private void joinButton_Click(object sender, EventArgs e)
         {
-
             userName = nickname.Text;
             nickname.ReadOnly = true;
 
             try
             {
-                //must bing socket
-                //IPEndPoint ipep = new IPEndPoint(IPAddress.Any, selfport);
-                //MessageBox.Show(ipep.ToString());
-                client = new UdpClient(selfport);
+                client = new UdpClient(receivePort);
                 
                 client.JoinMulticastGroup(ip, TTL);
+
                 Task listenTask = new Task(Listen);
                 listenTask.Start();
-                //listenTread.Start();
+                
                 string message = DateTime.Now.ToShortTimeString()
                     + ": " + nickname.Text + " connected";
 
@@ -87,15 +64,12 @@ namespace MultyChat
                 joinButton.Enabled = false;
                 disconnectButton.Enabled = true;
                 sendButton.Enabled = true;
-                
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "join");
+                MessageBox.Show(ex.Message + " in Join");
             }
-            //senderSocket.Connect(ep);
-            //MessageBox.Show("Connection...");
+            
         }
 
         private void disconnectButton_Click(object sender, EventArgs e)
@@ -117,7 +91,6 @@ namespace MultyChat
             disconnectButton.Enabled = false;
             sendButton.Enabled = false;
             nickname.ReadOnly = false;
-
         }
 
         private void sendButton_Click(object sender, EventArgs e)
@@ -129,7 +102,7 @@ namespace MultyChat
         void SendMessage(string message)
         {
             byte[] data = Encoding.Unicode.GetBytes(message);
-            client.Send(data, data.Length, ip.ToString(), remoteport);
+            client.Send(data, data.Length, ip.ToString(), sendPort);
             Appendtext(message);
         }
 
@@ -140,42 +113,28 @@ namespace MultyChat
             {
                 while (isAlive)
                 {
-                    //Socket receiveSocket = 
-                    //    new Socket(AddressFamily.InterNetwork,
-                    //    SocketType.Dgram,
-                    //    ProtocolType.Udp);
-                    //receiveSocket.Bind(ipep);
-                    ////senderSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 2);
-                    //receiveSocket.SetSocketOption
-                    //    (SocketOptionLevel.IP, 
-                    //    SocketOptionName.AddMembership, 
-                    //    new MulticastOption(ip, IPAddress.Any));
-
                     IPEndPoint ipep = null;
-                    byte[] buff = new byte[1024];
-                    client.Receive(ref ipep);
-
+                    byte[] buff = client.Receive(ref ipep);
                     string mes = Encoding.UTF8.GetString(buff);
-
                     Appendtext(mes);
-
-                    //receiveSocket.Close();
-                    //disconnect?
                 }
             }
-            catch (Exception ex)
+            catch(ObjectDisposedException)
             {
                 if (!isAlive)
                     return;
-                MessageBox.Show(ex.Message + "Listen");
-               
+                throw;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + " IN LISTEN");
             }
             
         }
 
         private void portInfo_TextChanged(object sender, EventArgs e)
         {
-            Int32.TryParse(portInfo.Text, out selfport);
+            Int32.TryParse(portInfo.Text, out sendPort);
         }
 
         void Appendtext(string message)
