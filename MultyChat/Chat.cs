@@ -104,7 +104,7 @@ namespace MultyChat
         {
             byte[] data = Encoding.UTF8.GetBytes(message);
             client.Send(data, data.Length, HOST, REMOTEPORT);
-           Appendtext(message);
+           //Appendtext(message);
         }
 
         void Listen()
@@ -117,11 +117,11 @@ namespace MultyChat
                     IPEndPoint remoteIP = new IPEndPoint(IPAddress.Any, REMOTEPORT);
                     byte[] buff = new byte[1024];
                     buff = client.Receive(ref remoteIP);
-                    if (remoteIP != null)
+                    if (buff!=null)
                     {
                         string mes = Encoding.UTF8.GetString(buff);
                         Appendtext(mes);
-                        MessageBox.Show(userName + "Received");
+                        //MessageBox.Show(userName + "Received");
                     }
                 }
             }
