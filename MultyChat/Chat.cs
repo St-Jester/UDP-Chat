@@ -117,7 +117,7 @@ namespace MultyChat
                     IPEndPoint remoteIP = new IPEndPoint(IPAddress.Any, REMOTEPORT);
                     byte[] buff = new byte[1024];
                     buff = client.Receive(ref remoteIP);
-                    if (buff!=null)
+                    if (buff != null)
                     {
                         string mes = Encoding.UTF8.GetString(buff);
                         Appendtext(mes);
@@ -146,11 +146,12 @@ namespace MultyChat
         {
             char anchor = ' ';
             string UN = message.Split(anchor)[0];
+            string TXTmessage = message.Substring(message.IndexOf(anchor));
             ListViewItem lvi = ChatView.Items.Add(UN);
             
-            lvi.SubItems.Insert(1,new ListViewItem.ListViewSubItem(lvi, message));
+            lvi.SubItems.Insert(1,new ListViewItem.ListViewSubItem(lvi, TXTmessage));
             
-            allMessages.Text = message + "\r\n" + allMessages.Text;
+            //allMessages.Text = message + "\r\n" + allMessages.Text;
         }
 
         private void receivePortInfo_TextChanged(object sender, EventArgs e)
