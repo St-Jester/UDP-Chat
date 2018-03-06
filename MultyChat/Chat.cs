@@ -20,7 +20,7 @@ namespace MultyChat
         UdpClient client;
         IPAddress ip;                   //ip for multicast
         int receivePort = 9005;         //LOCALPORT Receiving port
-        int sendPort;                   //REMOTEPORT Sending port
+        int sendPort = 9005;                   //REMOTEPORT Sending port
         int TTL = 20;                   //how many routers
 
         
@@ -40,6 +40,8 @@ namespace MultyChat
             disconnectButton.Enabled = false;
             sendButton.Enabled = false;
             Int32.TryParse(portInfo.Text, out sendPort);
+            Int32.TryParse(receivePortInfo.Text, out receivePort);
+
         }
 
         private void joinButton_Click(object sender, EventArgs e)
@@ -67,7 +69,7 @@ namespace MultyChat
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + " in Join");
+                MessageBox.Show(ex.Message + " IN JOIN");
             }
             
         }
@@ -102,19 +104,20 @@ namespace MultyChat
         void SendMessage(string message)
         {
             byte[] data = Encoding.Unicode.GetBytes(message);
-            client.Send(data, data.Length, ip.ToString(), sendPort);
+            client.Send(data, data.Length, HOST, sendPort);
             Appendtext(message);
         }
 
         void Listen()
         {
+            UdpClient receiver = new UdpClient(sendPort);
             isAlive = true;
             try
             {
                 while (isAlive)
                 {
                     IPEndPoint ipep = null;
-                    byte[] buff = client.Receive(ref ipep);
+                    byte[] buff = receiver.Receive(ref ipep);
                     string mes = Encoding.UTF8.GetString(buff);
                     Appendtext(mes);
                 }
@@ -142,5 +145,11 @@ namespace MultyChat
             allMessages.Text += message + "\r\n";
         }
 
+        private void receivePortInfo_TextChanged(object sender, EventArgs e)
+        {
+
+            Int32.TryParse(receivePortInfo.Text, out receivePort);
+
+        }
     }
 }

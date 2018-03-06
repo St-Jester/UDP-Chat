@@ -40,6 +40,8 @@
             this.nickname = new System.Windows.Forms.TextBox();
             this.disconnectButton = new System.Windows.Forms.Button();
             this.joinButton = new System.Windows.Forms.Button();
+            this.receivePortInfo = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -67,10 +69,12 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.status);
+            this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.portLabel);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.sendButton);
             this.groupBox2.Controls.Add(this.messageText);
+            this.groupBox2.Controls.Add(this.receivePortInfo);
             this.groupBox2.Controls.Add(this.portInfo);
             this.groupBox2.Controls.Add(this.nickname);
             this.groupBox2.Controls.Add(this.disconnectButton);
@@ -96,9 +100,9 @@
             this.portLabel.AutoSize = true;
             this.portLabel.Location = new System.Drawing.Point(94, 99);
             this.portLabel.Name = "portLabel";
-            this.portLabel.Size = new System.Drawing.Size(25, 13);
+            this.portLabel.Size = new System.Drawing.Size(50, 13);
             this.portLabel.TabIndex = 3;
-            this.portLabel.Text = "port";
+            this.portLabel.Text = "Sendport";
             // 
             // label1
             // 
@@ -166,6 +170,25 @@
             this.joinButton.UseVisualStyleBackColor = true;
             this.joinButton.Click += new System.EventHandler(this.joinButton_Click);
             // 
+            // receivePortInfo
+            // 
+            this.receivePortInfo.Location = new System.Drawing.Point(185, 124);
+            this.receivePortInfo.Multiline = true;
+            this.receivePortInfo.Name = "receivePortInfo";
+            this.receivePortInfo.Size = new System.Drawing.Size(99, 19);
+            this.receivePortInfo.TabIndex = 1;
+            this.receivePortInfo.Text = "9005";
+            this.receivePortInfo.TextChanged += new System.EventHandler(this.receivePortInfo_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(94, 124);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(66, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "ReceivePort";
+            // 
             // Chat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -197,6 +220,8 @@
         private System.Windows.Forms.Button joinButton;
         private System.Windows.Forms.Label portLabel;
         private System.Windows.Forms.TextBox portInfo;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox receivePortInfo;
     }
 }
 
